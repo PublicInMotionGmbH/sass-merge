@@ -4,7 +4,15 @@
   "description": "Package which allows merging SCSS/SASS/CSS files into single and optimized stylesheet",
   "main": "index.js",
   "author": "Dawid Rusnak <rusnak@talixo.com>",
+  "keywords": [ "sass", "scss", "merge", "nodejs", "combine", "inline", "css", "build", "build-tool" ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PublicInMotionGmbH/sass-merge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PublicInMotionGmbH/sass-merge/issues"
+  },
   "dependencies": {
     "chokidar": "^2.0.4",
     "find-node-modules": "^1.0.4",
