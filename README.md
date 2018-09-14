@@ -21,7 +21,28 @@ You can find examples in `examples` directory, for now it is:
 * `basic.js` - basic example with some simple benchmarking
 * `watcher.js` - example of watcher which also resolves URLs
 
-## API reference
+## CLI
+
+```
+Usage: sass-merge --input FILE_PATH --output FILE_PATH [option(s)]
+
+Options:
+  --help          Show help                                            [boolean]
+  --version       Show version number                                  [boolean]
+  --binary, -b    sass-convert executable file
+                               [string] [default: "/usr/local/bin/sass-convert"]
+  --target, -t    Type of file which will be generated
+                                     [choices: "scss", "sass"] [default: "scss"]
+  --input, -i     Input file to optimize for use             [string] [required]
+  --output, -o    Path where result should be stored         [string] [required]
+  --optimize      Unsafe optimizations                [boolean] [default: false]
+  --watch, -w     Should watch for file changes?      [boolean] [default: false]
+  --colors, -c    Should color watcher output?         [boolean] [default: true]
+  --manifest, -m  Manifest file path for url() mapping                  [string]
+  --public, -p    Public path of manifest files           [string] [default: ""]
+```
+
+## Node.js API reference
 
 ### SassMerge
 
