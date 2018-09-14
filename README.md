@@ -109,4 +109,8 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 * `optimizeRedundantVariables` may incorrectly detect redundancy for nested variables with same names
 * `optimizeRedundantFunctionsAndMixins` may incorrectly detect redundancy for nested functions/mixins with same names
 * CSS files are neither parsed nor validated, so they may contain target code (`sass` or `scss`)
-* [ ] **TODO:** nested `@import`s will not work correctly for `target: "sass"`, as they need indentation
+
+## Changelog
+
+- *0.1.1* - fix nested `@import`s for `target: "sass"`
+- *0.1.0* - initial version

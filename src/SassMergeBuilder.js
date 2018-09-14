@@ -76,7 +76,7 @@ class SassMergeBuilder {
    */
   resolveImports (filePath, content, format) {
     const regex = format === 'scss'
-      ? /(@import\s+)(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)")()(\s*(;|$))/g
+      ? /(@import\s+)(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)")()(\s*([;}]|$))/g
       : /(@import\s+)(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)"|(.+?))(\s*(\n|$))/g
 
     return content.replace(regex, ($0, before, singleQuote, doubleQuote, literal, spacing) => {
@@ -248,7 +248,6 @@ class SassMergeBuilder {
 
   /**
    * Build final file contents and return it.
-   * FIXME: indent @imports correctly, otherwise it will break for 'sass' target for imports nested in blocks
    *
    * @param {string} format
    * @param {SassMergeFile} inputFile
@@ -291,9 +290,12 @@ class SassMergeBuilder {
 
       // Build partial code
       const partialContent = this.buildFinalFile(format, partialFile, files, cycleId, importPath.concat(inputFile.path))
+      const indentedContent = partial.indentation
+        ? partialContent.replace(/\n(?:[\t\r ]*\n)*/g, `\n${partial.indentation}`) + '\n'
+        : partialContent + '\n'
 
       // Replace @import clause with partial code
-      content = content.substr(0, partial.index) + partialContent + content.substr(partial.endIndex)
+      content = content.substr(0, partial.index) + indentedContent + content.substr(partial.endIndex)
     }
 
     // Optimize output

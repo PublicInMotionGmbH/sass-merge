@@ -10,15 +10,15 @@ const determineFileFormat = require('./determineFileFormat')
  * @property {object} content.css
  * @property {null|string} content.css.original  not processed code
  * @property {null|string} content.css.final  processed code
- * @property {object[]|Array<{ filePath: string, index: number }>|null} content.css.imports  list of @import clauses in unprocessed code
+ * @property {object[]|Array<{ filePath: string, index: number, indentation: string }>|null} content.css.imports  list of @import clauses in unprocessed code
  * @property {object} content.scss
  * @property {null|string} content.scss.original  not processed code
  * @property {null|string} content.scss.final  processed code
- * @property {object[]|Array<{ filePath: string, index: number }>|null} content.scss.imports  list of @import clauses in unprocessed code
+ * @property {object[]|Array<{ filePath: string, index: number, indentation: string }>|null} content.scss.imports  list of @import clauses in unprocessed code
  * @property {object} content.sass
  * @property {null|string} content.sass.original  not processed code
  * @property {null|string} content.sass.final  processed code
- * @property {object[]|Array<{ filePath: string, index: number }>|null} content.sass.imports  list of @import clauses in unprocessed code
+ * @property {object[]|Array<{ filePath: string, index: number, indentation: string }>|null} content.sass.imports  list of @import clauses in unprocessed code
  * @class
  */
 class SassMergeFile {
@@ -145,7 +145,7 @@ class SassMergeFile {
    * Get all imports from code in specified format.
    *
    * @param {string} [format]  defaults: original one
-   * @returns {object[]|Array<{ filePath: string, index: number }>}
+   * @returns {object[]|Array<{ filePath: string, index: number, indentation: string }>}
    */
   getImports (format = this.originalFormat) {
     // Check if there is such format
@@ -168,8 +168,8 @@ class SassMergeFile {
 
     // Determine regular expression for @import
     const regex = format === 'scss'
-      ? /@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)")()(\s*(;|$))/g
-      : /@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)"|(.+?))(\s*(\n|$))/g
+      ? /()()@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)")()(\s*([;}]|$))/g
+      : /((^|\n)[\t\r ]*)@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)"|(.+?))(\s*(\n|$))/g
 
     // Build list of @imports
     const imports = []
@@ -177,7 +177,7 @@ class SassMergeFile {
     // Find all occurrences of @import clauses
     let result
     while (result = regex.exec(content)) {
-      const rawFilePath = (result[1] || result[2] || result[3]).replace(/\\(.)/g, ($0, character) => character)
+      const rawFilePath = (result[3] || result[4] || result[5]).replace(/\\(.)/g, ($0, character) => character)
 
       // Ignore external URLs
       if (rawFilePath.startsWith('url(')) {
@@ -185,8 +185,9 @@ class SassMergeFile {
       }
 
       imports.push({
-        index: result.index,
+        index: result.index + result[1].length + result[2].length,
         endIndex: result.index + result[0].length,
+        indentation: result[1].substr(result[2].length),
         filePath: rawFilePath
       })
     }

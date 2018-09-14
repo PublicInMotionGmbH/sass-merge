@@ -8,6 +8,8 @@ $var1: 303 !default;
 
 .something-with-background {
   background: #000 url(../assets/file.png) no-repeat;
+
+  @import './functions.scss';
 }
 
 .something-with-background-quotes {
