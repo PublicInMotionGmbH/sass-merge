@@ -169,7 +169,7 @@ class SassMergeFile {
     // Determine regular expression for @import
     const regex = format === 'scss'
       ? /()()@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)")()(\s*([;}]|$))/g
-      : /((^|\n)[\t\r ]*)@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)"|(.+?))(\s*(\n|$))/g
+      : /((^|\n)[\t\r ]*)@import\s+(?:'((?:\\.|[^'])+)'|"((?:\\.|[^"])+)"|(.+?))(\s*(\n|$))/gm
 
     // Build list of @imports
     const imports = []

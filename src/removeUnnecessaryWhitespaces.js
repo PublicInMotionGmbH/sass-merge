@@ -10,6 +10,7 @@ function removeUnnecessaryWhitespaces (code, format) {
 
   if (format === 'scss' || format === 'css') {
     code = code.replace(/(?:(^|\n)(?:\s+))/g, '$1')
+    code = code.replace(/\n/g, '')
   }
 
   // if (format === 'scss') {
