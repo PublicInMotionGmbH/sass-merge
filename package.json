@@ -1,5 +1,5 @@
 {
-  "name": "sass-merge",
+  "name": "@talixo/sass-merge",
   "version": "0.1.0",
   "description": "Package which allows merging SCSS/SASS/CSS files into single and optimized stylesheet",
   "main": "index.js",

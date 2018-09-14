@@ -12,7 +12,7 @@ Also, because it's using some new JavaScript syntax, you should have Node.js 9+ 
 ## Installation
 
 - Install on machine [Ruby](https://www.ruby-lang.org/en/documentation/installation/) with [Sass gem](https://rubygems.org/gems/sass) (`gem install sass`)
-- Run `npm install sass-merge --save`
+- Run `npm install @talixo/sass-merge --save`
 
 ## Examples
 
