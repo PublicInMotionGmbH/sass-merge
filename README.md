@@ -133,5 +133,6 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.2* - added CLI executable `sass-merge` command
 - *0.1.1* - fix nested `@import`s for `target: "sass"`
 - *0.1.0* - initial version
