@@ -227,6 +227,7 @@ class SassMerge {
   /**
    * Run single-time build.
    *
+   * @param {object} [cache]
    * @returns {Promise<string>}
    */
   build (cache) {

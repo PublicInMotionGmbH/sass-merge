@@ -458,7 +458,7 @@ class SassMergeBuilder {
       this.progress = false
 
       // Stop all processes which are no longer required
-      // TODO: this.stop(silent=true)?
+      // TODO: this.stop()?
 
       // Rethrow error
       throw error
@@ -477,8 +477,9 @@ class SassMergeBuilder {
     // TODO: add `stop` method which will stop all procedures and kill spawned processes
     return new Promise((resolve, reject) => {
       const args = [ '--from', fromFormat, '--to', toFormat, '--stdin' ]
+      const options = { maxBuffer: this.runner.options.maxBuffer }
 
-      const child = execFile(this.runner.options.binary, args, (error, result) => {
+      const child = execFile(this.runner.options.binary, args, options, (error, result) => {
         if (error) {
           reject(error)
         } else {
@@ -494,7 +495,7 @@ class SassMergeBuilder {
   }
 
   /**
-   * Stop any on-going procedure.
+   * TODO: Stop any on-going procedure.
    */
   stop () {
 
