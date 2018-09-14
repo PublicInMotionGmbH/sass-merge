@@ -1,0 +1,7 @@
+@function width ($amount, $max) {
+  @return 100% * ($amount / $max)
+}
+
+body {
+  background: blue;
+}

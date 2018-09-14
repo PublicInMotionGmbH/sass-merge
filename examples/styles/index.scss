@@ -1,0 +1,32 @@
+// This variable will be used only once, configuration one will be ignored
+$var1: 303 !default;
+
+.main {
+  padding: 0;
+  margin: 0;
+}
+
+.something-with-background {
+  background: #000 url(../assets/file.png) no-repeat;
+}
+
+.something-with-background-quotes {
+  background: #000 url('../assets/file.png') no-repeat;
+}
+
+.something-with-background-double-quotes {
+  background: #000 url("../assets/file.png") no-repeat;
+}
+
+.something-with-url-external {
+  background: #000 url("https://google.pl/assets/file.png") no-repeat;
+}
+
+.something-with-url-global {
+  background: #000 url("/assets/file.png") no-repeat;
+}
+
+@import './config';
+@import './functions.scss';
+
+@import './some-component';

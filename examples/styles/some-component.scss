@@ -1,0 +1,10 @@
+// I am loading here configuration and functions once again
+// But configuration variable is loaded already in index.scss, so it will be ignored,
+// So from 'config.sass' and 'functions.scss' it will get only some styles for body and *.
+@import './config';
+@import './functions';
+
+.some-component {
+  width: width(10px, 50px);
+  background: red;
+}
