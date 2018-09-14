@@ -1,6 +1,6 @@
 {
   "name": "@talixo/sass-merge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Package which allows merging SCSS/SASS/CSS files into single and optimized stylesheet",
   "main": "index.js",
   "author": "Dawid Rusnak <rusnak@talixo.com>",
