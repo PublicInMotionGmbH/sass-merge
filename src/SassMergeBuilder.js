@@ -373,7 +373,7 @@ class SassMergeBuilder {
 
     // Resolve by manifest file
     if (typeof resolveUrl === 'string') {
-      return this.urls[filePath] ? publicPath + this.urls[filePath] : publicPath
+      return this.urls[filePath] ? publicPath + this.urls[filePath] : filePath
     }
 
     // Resolve by function
@@ -383,7 +383,7 @@ class SassMergeBuilder {
 
     // Resolve by files mapping
     if (typeof resolveUrl === 'object') {
-      return resolveUrl[filePath] ? publicPath + resolveUrl[filePath] : publicPath
+      return resolveUrl[filePath] ? publicPath + resolveUrl[filePath] : filePath
     }
 
     return filePath

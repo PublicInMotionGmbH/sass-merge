@@ -134,6 +134,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.6* - fix resolving URLs of not existing files (with manifest file)
 - *0.1.5* - add possibility to use polling
 - *0.1.4* - improve watcher, to watch files in case of error as well
 - *0.1.3* - fix multiple imports in SASS syntax
