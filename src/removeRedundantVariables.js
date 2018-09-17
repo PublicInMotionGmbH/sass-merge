@@ -8,10 +8,15 @@
  * @returns {string}
  */
 function removeRedundantVariables (content, format) {
-  const regex = /(\$[a-z0-9A-Z\-_]+):\s*(.+?)\s*!default\s*(?:[;}]|$)/g
+  const regex = /(\$[a-z0-9A-Z\-_]+):\s*([^;]+?)\s*!default\s*(?:[;}]|$)/g
   const matches = {}
 
   return content.replace(regex, ($0, name) => {
+    if ($0.indexOf('grid') !== -1) {
+      console.log(name)
+      console.log('-----')
+      console.log($0.length > 200 ? $0.substr(0, 200) + '...' : $0)
+    }
     if (matches[name]) {
       return ''
     }

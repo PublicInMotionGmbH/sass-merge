@@ -134,6 +134,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.8* - fix removing redundant variables, to not include code behind
 - *0.1.7* - fix resolving paths of advanced URLs (with query strings and hashes)
 - *0.1.6* - fix resolving URLs of not existing files (with manifest file)
 - *0.1.5* - add possibility to use polling
