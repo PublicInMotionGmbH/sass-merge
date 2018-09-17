@@ -134,6 +134,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.10* - fix issues with cache, so files are invalidated correctly
 - *0.1.9* - remove unnecessary logging
 - *0.1.8* - fix removing redundant variables, to not include code behind
 - *0.1.7* - fix resolving paths of advanced URLs (with query strings and hashes)

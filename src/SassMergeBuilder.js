@@ -3,6 +3,7 @@ const execFile = require('child_process').execFile
 const stream = require('stream')
 const path = require('path')
 const uuid = require('uuid/v4')
+const microtime = require('microtime')
 
 const SassMergeFile = require('./SassMergeFile')
 const determineFileFormat = require('./determineFileFormat')
@@ -122,17 +123,17 @@ class SassMergeBuilder {
    * Load file, either from cache or from disk.
    *
    * @param {string} filePath
-   * @param {string} cycleId  last update cycleId
+   * @param {number} buildTime  last update buildTime
    * @param {object} [cache]
    * @returns {Promise<SassMergeFile>}
    */
-  getFile (filePath, cycleId, cache) {
+  getFile (filePath, buildTime, cache) {
     cache = cache || {}
 
     const content = this.readFile(filePath)
 
     if (!cache[filePath] || cache[filePath].getUnprocessedContent() !== content) {
-      cache[filePath] = new SassMergeFile(filePath, content, cycleId)
+      cache[filePath] = new SassMergeFile(filePath, content, buildTime)
     }
 
     return cache[filePath]
@@ -141,11 +142,11 @@ class SassMergeBuilder {
   /**
    * Load all files which are in @import chain to memory.
    *
-   * @param {string} cycleId  cycle id
+   * @param {number} buildTime  cycle id
    * @param {object} [cache]  cache container
    * @returns {Promise<{input: SassMergeFile, files: object}>}
    */
-  async loadAllFiles (cycleId, cache) {
+  async loadAllFiles (buildTime, cache) {
     cache = cache || {}
 
     const inputFilePath = this.runner.resolveFilePath(this.runner.inputFilePath)
@@ -158,7 +159,7 @@ class SassMergeBuilder {
 
     // Load contents of all files
     while (queuedFilePaths.length) {
-      const file = this.getFile(queuedFilePaths.shift(), cycleId, cache)
+      const file = this.getFile(queuedFilePaths.shift(), buildTime, cache)
 
       const localImports = file.getImports()
 
@@ -192,10 +193,10 @@ class SassMergeBuilder {
    *
    * @param {object} files
    * @param {string} format
-   * @param {string} cycleId
+   * @param {number} buildTime
    * @returns {Promise<string[]>}  File paths of files which were converted
    */
-  async prepareFilesToFormat (files, format, cycleId) {
+  async prepareFilesToFormat (files, format, buildTime) {
     const requiredFiles = []
     const convertable = []
 
@@ -242,7 +243,7 @@ class SassMergeBuilder {
     let r
     while ((r = regex.exec(result))) {
       const file = files[r[1]]
-      file.setUnprocessedContent(format, r[2], cycleId)
+      file.setUnprocessedContent(format, r[2], buildTime)
     }
 
     return convertable
@@ -254,11 +255,11 @@ class SassMergeBuilder {
    * @param {string} format
    * @param {SassMergeFile} inputFile
    * @param {object} files
-   * @param {string} cycleId
+   * @param {number} buildTime
    * @param {string[]} [importPath]
    * @returns {string}
    */
-  buildFinalFile (format, inputFile, files, cycleId, importPath = []) {
+  buildFinalFile (format, inputFile, files, buildTime, importPath = []) {
     // Detect circular dependency
     if (importPath.indexOf(inputFile.path) !== -1) {
       throw new Error('SassMerge: circular dependency detected:\n⇢ ' + importPath.concat(inputFile.path).reverse().join('\n⇡ '))
@@ -268,13 +269,8 @@ class SassMergeBuilder {
     const imports = inputFile.getImports(format)
 
     // Check if this file has been already built
-    if (inputFile.hasFinalContent(format)) {
-      const dependencies = imports.map(dependency => files[dependency.filePath])
-
-      // Check if all dependencies has been built in same cycle or has changed
-      if (dependencies.findIndex(x => x.cycleId === inputFile.cycleId) === -1) {
-        return inputFile.getFinalContent(format)
-      }
+    if (!inputFile.hasChanges(format, files)) {
+      return inputFile.getFinalContent(format)
     }
 
     // Retrieve original content to include imported files inside
@@ -291,7 +287,7 @@ class SassMergeBuilder {
       }
 
       // Build partial code
-      const partialContent = this.buildFinalFile(format, partialFile, files, cycleId, importPath.concat(inputFile.path))
+      const partialContent = this.buildFinalFile(format, partialFile, files, buildTime, importPath.concat(inputFile.path))
       const indentedContent = partial.indentation
         ? partialContent.replace(/\n(?:[\t\r ]*\n)*/g, `\n${partial.indentation}`) + '\n'
         : partialContent + '\n'
@@ -319,7 +315,7 @@ class SassMergeBuilder {
     }
 
     // Set final content for later use (cache)
-    inputFile.setFinalContent(format, content, cycleId)
+    inputFile.setFinalContent(format, content, buildTime)
 
     return content
   }
@@ -427,18 +423,18 @@ class SassMergeBuilder {
     const target = this.runner.options.target
 
     // Build cycle ID to detect changes in cached files
-    const cycleId = uuid()
+    const buildTime = microtime.now()
 
     // Load files and information about input one
-    const { input, files } = await this.loadAllFiles(cycleId, cache)
+    const { input, files } = await this.loadAllFiles(buildTime, cache)
 
     try {
       // Convert all files to desired format
-      await this.prepareFilesToFormat(files, target, cycleId)
+      await this.prepareFilesToFormat(files, target, buildTime)
 
       // Build ready to use stylesheet
       return {
-        stylesheet: this.buildFinalFile(target, input, files, cycleId),
+        stylesheet: this.buildFinalFile(target, input, files, buildTime),
         files: files
       }
     } catch (error) {

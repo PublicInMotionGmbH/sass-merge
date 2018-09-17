@@ -5,7 +5,7 @@ const determineFileFormat = require('./determineFileFormat')
  *
  * @property {string} path
  * @property {string} originalFormat
- * @property {string} cycleId  ID of cycle when last time this file has been updated
+ * @property {number} buildTime  ID of cycle when last time this file has been updated
  * @property {object} content
  * @property {object} content.css
  * @property {null|string} content.css.original  not processed code
@@ -25,10 +25,10 @@ class SassMergeFile {
   /**
    * @param {string} filePath
    * @param {string} content  Basic content
-   * @param {string} cycleId  ID of current cycle
+   * @param {number} buildTime  ID of current cycle
    * @constructor
    */
-  constructor (filePath, content, cycleId) {
+  constructor (filePath, content, buildTime) {
     this.path = filePath
     this.originalFormat = determineFileFormat(filePath)
     this.content = {
@@ -41,7 +41,7 @@ class SassMergeFile {
       throw new Error('SassMerge: cannot determine file format of `' + filePath + '` file!')
     }
 
-    this.setUnprocessedContent(this.originalFormat, content, cycleId)
+    this.setUnprocessedContent(this.originalFormat, content, buildTime)
   }
 
   /**
@@ -69,11 +69,11 @@ class SassMergeFile {
    *
    * @param {string} format
    * @param {string} content
-   * @param {string} cycleId  current cycle ID
+   * @param {number} buildTime  current cycle ID
    * @returns {string|null}
    */
-  setUnprocessedContent (format, content, cycleId) {
-    if (cycleId == null) {
+  setUnprocessedContent (format, content, buildTime) {
+    if (buildTime == null) {
       throw new Error('SassMerge: cycle ID is required')
     }
 
@@ -93,7 +93,7 @@ class SassMergeFile {
       this.content.sass.imports = null
     }
 
-    this.cycleId = cycleId
+    this.buildTime = buildTime
   }
 
   /**
@@ -101,11 +101,11 @@ class SassMergeFile {
    *
    * @param {string} format
    * @param {string} content
-   * @param {string} cycleId  current cycle ID
+   * @param {number} buildTime  current cycle ID
    * @returns {string|null}
    */
-  setFinalContent (format, content, cycleId) {
-    if (cycleId == null) {
+  setFinalContent (format, content, buildTime) {
+    if (buildTime == null) {
       throw new Error('SassMerge: cycle ID is required')
     }
 
@@ -118,7 +118,7 @@ class SassMergeFile {
       this.content.sass.final = content
     }
 
-    this.cycleId = cycleId
+    this.buildTime = buildTime
   }
 
   /**
@@ -196,6 +196,44 @@ class SassMergeFile {
     this.content[format].imports = imports
 
     return imports
+  }
+
+  /**
+   * Check against other files if this file should be rebuilt.
+   *
+   * @param {string} format
+   * @param {object} files  map of files, filePath => SassMergeFile
+   * @returns {boolean}
+   */
+  hasChanges (format, files) {
+    const dependencies = this.getImports(format)
+
+    // Has changed, when still there is no final content available
+    if (!this.hasFinalContent(format)) {
+      return true
+    }
+
+    // Iterate over all dependencies
+    for (const dependency of dependencies) {
+      const file = files[dependency.filePath]
+
+      // Dependency has changed, because it was built in different cycle
+      if (file.buildTime > this.buildTime) {
+        return true
+      }
+
+      // Dependency has changed, because it hasn't ready code
+      if (!file.hasFinalContent(format)) {
+        return true
+      }
+
+      // Deep dependencies have changed
+      if (file.hasChanges(format, files)) {
+        return true
+      }
+    }
+
+    return false
   }
 }
 

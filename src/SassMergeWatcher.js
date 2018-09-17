@@ -94,10 +94,6 @@ class SassMergeWatcher extends EventEmitter {
     this.isWatchingOnManifestFile = true
   }
 
-  unwatchPossiblyCreatedFiles () {
-
-  }
-
   /**
    * Run build and emit connected events.
    * TODO: stop already spawned processes on run
