@@ -14,6 +14,7 @@ const argv = yargs
     binary: which.sync('sass-convert', { nothrow: true }),
     optimize: false,
     watch: false,
+    usePolling: false,
     colors: !process.env.CI,
     public: ''
   })
@@ -37,6 +38,8 @@ const argv = yargs
   .boolean('optimize')
   .describe('watch', 'Should watch for file changes?')
   .boolean('watch')
+  .describe('polling', 'Should use polling for watchers?')
+  .boolean('polling')
   .describe('colors', 'Should color watcher output?')
   .boolean('colors')
   .describe('manifest', 'Manifest file path for url() mapping')
@@ -47,6 +50,7 @@ const argv = yargs
   .argv
 
 const merger = new SassMerge(argv.input, {
+  usePolling: argv.polling,
   binary: argv.binary,
   target: argv.target,
   optimizeRedundantFunctionsAndMixins: argv.optimize,

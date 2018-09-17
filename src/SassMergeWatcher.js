@@ -26,7 +26,11 @@ class SassMergeWatcher extends EventEmitter {
     this.cache = {}
 
     // Initialize watcher
-    const watcher = chokidar.watch([], { ignoreInitial: true })
+    const watcher = chokidar.watch([], {
+      usePolling: !!sassMerger.options.usePolling,
+      ignoreInitial: true
+    })
+
     watcher.on('all', (...args) => this.run(...args))
     this.isWatchingOnManifestFile = false
 

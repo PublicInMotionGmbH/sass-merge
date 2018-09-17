@@ -16,6 +16,7 @@ const defaultOptions = {
   globalPrefixes: [ '', '~' ],
   maxBuffer: 500 * 1024,
   cacheFilePaths: true,
+  usePolling: false,
   removeUnnecessaryWhitespaces: true,
   removeComments: true,
   optimizeRedundantVariables: false,
@@ -36,6 +37,7 @@ const defaultOptions = {
  * @property {string} options.binary
  * @property {string} options.target
  * @property {number} options.maxBuffer
+ * @property {boolean} options.usePolling
  * @property {boolean} options.cacheFilePaths
  * @property {boolean} options.removeComments
  * @property {boolean} options.removeUnnecessaryWhitespaces
@@ -56,8 +58,10 @@ class SassMerge {
    * @param {string} [options.binary]
    * @param {string} [options.target]
    * @param {number} [options.maxBuffer]
+   * @param {boolean} [options.usePolling]
    * @param {boolean} [options.cacheFilePaths]
    * @param {boolean} [options.removeComments]
+   * @param {boolean} [options.removeUnnecessaryWhitespaces]
    * @param {boolean} [options.optimizeRedundantVariables]
    * @param {boolean} [options.optimizeRedundantFunctionsAndMixins]
    * @param {function|string|object} [options.resolveUrl]  either - function to resolve, path to JSON file with map of URLs, or map itself

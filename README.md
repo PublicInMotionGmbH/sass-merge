@@ -83,6 +83,7 @@ merger.build().then(console.log, console.error)
 | `extensions`                          | `[ "", ".scss", ".sass", ".css", "/index.scss", "/index.sass", "/index.css" ]` | extensions which should be automatically resolved
 | `maxBuffer`                           | `500 * 1024`                   | max buffer for child process; you may need to increase it for bigger files
 | `binary`                              | global `sass-convert`          | path to `sass-convert` executable file
+| `usePolling`                          | `false`                        | should use polling for watchers? (slower, but it's required on some environments)
 
 ### SassMergeWatcher
 
