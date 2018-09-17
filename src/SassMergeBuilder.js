@@ -90,7 +90,9 @@ class SassMergeBuilder {
       const _filePath = this.runner.resolveFilePath(rawFilePath, filePath)
 
       if (!_filePath) {
-        throw new Error(`SassMerge: cannot resolve "${rawFilePath}" in "${filePath}"!`)
+        const error = new Error(`SassMerge: cannot resolve "${rawFilePath}" in "${filePath}"!`)
+        error.availablePaths = this.runner.getAvailableFilePaths(rawFilePath, filePath)
+        throw error
       }
 
       return `${before}"${_filePath.replace(/"/g, '\\"')}"${spacing}`
@@ -423,13 +425,18 @@ class SassMergeBuilder {
     // Load files and information about input one
     const { input, files } = await this.loadAllFiles(cycleId, cache)
 
-    // Convert all files to desired format
-    await this.prepareFilesToFormat(files, target, cycleId)
+    try {
+      // Convert all files to desired format
+      await this.prepareFilesToFormat(files, target, cycleId)
 
-    // Build ready to use stylesheet
-    return {
-      stylesheet: this.buildFinalFile(target, input, files, cycleId),
-      files: files
+      // Build ready to use stylesheet
+      return {
+        stylesheet: this.buildFinalFile(target, input, files, cycleId),
+        files: files
+      }
+    } catch (error) {
+      error.files = Object.keys(files)
+      throw error
     }
   }
 

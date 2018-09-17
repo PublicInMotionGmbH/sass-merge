@@ -90,6 +90,10 @@ class SassMergeWatcher extends EventEmitter {
     this.isWatchingOnManifestFile = true
   }
 
+  unwatchPossiblyCreatedFiles () {
+
+  }
+
   /**
    * Run build and emit connected events.
    * TODO: stop already spawned processes on run
@@ -113,6 +117,20 @@ class SassMergeWatcher extends EventEmitter {
         took: (microtime.now() - startTime) / 1000
       })
     } catch (error) {
+      const watchedFiles = [].concat(this.previouslyWatched || [])
+
+      if (error && error.availablePaths) {
+        watchedFiles.push(...error.availablePaths)
+      }
+
+      if (error && error.files) {
+        watchedFiles.push(...error.files)
+      }
+
+      if (watchedFiles.length) {
+        this.watchFiles(watchedFiles)
+      }
+
       this.emit('error', {
         error: error,
         took: (microtime.now() - startTime) / 1000

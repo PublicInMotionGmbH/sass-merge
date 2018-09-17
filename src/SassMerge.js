@@ -225,6 +225,61 @@ class SassMerge {
   }
 
   /**
+   * Get list of possible file paths for specified file name.
+   *
+   * @param {string} filePath
+   * @param {string} [fromFilePath]
+   * @returns {string|null}
+   */
+  getAvailableFilePaths (filePath, fromFilePath = filePath) {
+    const cwd = path.dirname(fromFilePath)
+
+    return this._getAvailableFilePaths(filePath, cwd)
+  }
+
+  /**
+   * @param {string} filePath
+   * @param {string} cwd
+   *
+   * @returns {string|null}
+   * @private
+   */
+  _getAvailableFilePaths (filePath, cwd) {
+    const possibilities = []
+
+    // Build possible file names (including their extensions)
+    const fileNames = this.options.extensions.map(extension => filePath + extension)
+
+    // Build absolute file paths for these file names
+    for (let fileName of fileNames) {
+      if (!path.isAbsolute(fileName)) {
+        fileName = path.resolve(path.join(cwd, fileName))
+      }
+
+      possibilities.push(fileName)
+    }
+
+    // Try to reach file also in global directories
+    for (const prefix of this.options.globalPrefixes) {
+      if (!filePath.startsWith(prefix)) {
+        continue
+      }
+
+      const globalFileNames = fileNames.map(fileName => fileName.substr(prefix.length))
+
+      for (const directory of this.options.globalDirectories) {
+        for (const fileName of globalFileNames) {
+          const _filePath = path.join(directory, fileName)
+
+          possibilities.push(_filePath)
+        }
+      }
+    }
+
+    return possibilities
+  }
+
+  /**
    * Run single-time build.
    *
    * @param {object} [cache]
