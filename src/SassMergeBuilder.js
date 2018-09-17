@@ -336,7 +336,11 @@ class SassMergeBuilder {
     const external = /^(?:(?:http|ftp)s?:)?\/\//
 
     return content.replace(regex, ($0, quote, doubleQuote, literal) => {
-      const url = (quote || doubleQuote || literal).replace(/\\(.)/g, ($0, $1) => $1)
+      const __url = (quote || doubleQuote || literal).replace(/\\(.)/g, ($0, $1) => $1)
+      const [ _url, _hash ] = __url.split('#')
+      const hash = _hash ? '#' + _hash : ''
+      const [ url, _query ] = _url.split('?')
+      const query = _query ? '?' + _query : ''
 
       // Ignore URLs which starts with "/" as they will match exactly in domain
       if (url.startsWith('/')) {
@@ -349,8 +353,9 @@ class SassMergeBuilder {
       }
 
       const absolutePath = this.runner.resolveFilePath(url) || path.resolve(path.join(path.dirname(filePath), url))
+      const resolvedUrl = this.resolveUrl(absolutePath, filePath, url, query || null, hash || null).replace(/"/g, '\\"')
 
-      return 'url("' + this.resolveUrl(absolutePath, filePath, url).replace(/"/g, '\\"') + '")'
+      return 'url("' + resolvedUrl + query + hash + '")'
     })
   }
 
@@ -360,9 +365,11 @@ class SassMergeBuilder {
    * @param {string} filePath  absolute file path calculated from local address
    * @param {string} initiatorFilePath  absolute file path of parent stylesheet
    * @param {string} relativePath  relative file path from parent stylesheet
+   * @param {string} queryString  query string took from file path
+   * @param {string} hash  hash took from file path
    * @return {string}
    */
-  resolveUrl (filePath, initiatorFilePath, relativePath) {
+  resolveUrl (filePath, initiatorFilePath, relativePath, queryString, hash) {
     const resolveUrl = this.runner.options.resolveUrl
     const publicPath = this.runner.options.publicPath
 
@@ -373,17 +380,17 @@ class SassMergeBuilder {
 
     // Resolve by manifest file
     if (typeof resolveUrl === 'string') {
-      return this.urls[filePath] ? publicPath + this.urls[filePath] : filePath
+      return this.urls[filePath] ? publicPath + this.urls[filePath] : relativePath
     }
 
     // Resolve by function
     if (typeof resolveUrl === 'function') {
-      return resolveUrl(filePath, initiatorFilePath, relativePath)
+      return resolveUrl(filePath, initiatorFilePath, relativePath, queryString, hash)
     }
 
     // Resolve by files mapping
     if (typeof resolveUrl === 'object') {
-      return resolveUrl[filePath] ? publicPath + resolveUrl[filePath] : filePath
+      return resolveUrl[filePath] ? publicPath + resolveUrl[filePath] : relativePath
     }
 
     return filePath
