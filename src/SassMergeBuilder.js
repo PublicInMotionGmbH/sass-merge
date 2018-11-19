@@ -491,6 +491,10 @@ class SassMergeBuilder {
       const args = [ '--from', fromFormat, '--to', toFormat, '--stdin' ]
       const options = { maxBuffer: this.runner.options.maxBuffer }
 
+      if (this.runner.options.encoding) {
+        args.unshift('--default-encoding', this.runner.options.encoding)
+      }
+
       const child = execFile(this.runner.options.binary, args, options, (error, result) => {
         if (error) {
           reject(error)

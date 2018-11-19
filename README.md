@@ -37,9 +37,11 @@ Options:
   --output, -o    Path where result should be stored         [string] [required]
   --optimize      Unsafe optimizations                [boolean] [default: false]
   --watch, -w     Should watch for file changes?      [boolean] [default: false]
+  --polling       Should use polling for watchers?    [boolean] [default: false]
   --colors, -c    Should color watcher output?         [boolean] [default: true]
   --manifest, -m  Manifest file path for url() mapping                  [string]
   --public, -p    Public path of manifest files           [string] [default: ""]
+  --encoding      default encoding to use                               [string]
 ```
 
 ## Node.js API reference
@@ -84,6 +86,7 @@ merger.build().then(console.log, console.error)
 | `maxBuffer`                           | `500 * 1024`                   | max buffer for child process; you may need to increase it for bigger files
 | `binary`                              | global `sass-convert`          | path to `sass-convert` executable file
 | `usePolling`                          | `false`                        | should use polling for watchers? (slower, but it's required on some environments)
+| `encoding`                            | -                              | default file encoding passed to `sass-convert`
 
 ### SassMergeWatcher
 
@@ -134,6 +137,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.11* - add possibility to pass default file encoding
 - *0.1.10* - fix issues with cache, so files are invalidated correctly
 - *0.1.9* - remove unnecessary logging
 - *0.1.8* - fix removing redundant variables, to not include code behind

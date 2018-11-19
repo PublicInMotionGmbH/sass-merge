@@ -14,7 +14,7 @@ const argv = yargs
     binary: which.sync('sass-convert', { nothrow: true }),
     optimize: false,
     watch: false,
-    usePolling: false,
+    polling: false,
     colors: !process.env.CI,
     public: ''
   })
@@ -46,6 +46,8 @@ const argv = yargs
   .string('manifest')
   .describe('public', 'Public path of manifest files')
   .string('public')
+  .describe('encoding', 'default encoding to use')
+  .string('encoding')
   .demandOption([ 'input', 'output' ])
   .argv
 
@@ -56,7 +58,8 @@ const merger = new SassMerge(argv.input, {
   optimizeRedundantFunctionsAndMixins: argv.optimize,
   optimizeRedundantVariables: argv.optimize,
   resolveUrl: argv.resolveUrl || null,
-  public: argv.public
+  public: argv.public,
+  encoding: argv.encoding
 })
 
 if (argv.watch) {
