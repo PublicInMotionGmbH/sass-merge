@@ -7,7 +7,7 @@
  */
 function removeComments (code, format) {
   // Remove single line comments
-  const lineCommentsRegex = /(?:(url)\(\s*['"]?(?:[a-z]+:)?)?\/\/[^\n]+/gi
+  const lineCommentsRegex = /(?:(url)\(\s*['"]?(?:[a-z]+:)?)?\/\/[^\n]*/gi
   code = code.replace(lineCommentsRegex, ($0, isURL) => isURL ? $0 : '')
 
   // Remove multi line comments

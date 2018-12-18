@@ -137,6 +137,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.12* - fix problems with empty single-line comments (without any character inside)
 - *0.1.11* - add possibility to pass default file encoding
 - *0.1.10* - fix issues with cache, so files are invalidated correctly
 - *0.1.9* - remove unnecessary logging
