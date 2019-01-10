@@ -339,7 +339,7 @@ class SassMergeBuilder {
       const query = _query ? '?' + _query : ''
 
       // Ignore URLs which starts with "/" as they will match exactly in domain
-      if (url.startsWith('/')) {
+      if (!this.runner.options.resolveUrlsStartingWithSlash && url.startsWith('/')) {
         return $0
       }
 

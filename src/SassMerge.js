@@ -21,6 +21,7 @@ const defaultOptions = {
   removeComments: true,
   optimizeRedundantVariables: false,
   optimizeRedundantFunctionsAndMixins: false,
+  resolveUrlsStartingWithSlash: false,
   resolveUrl: null,
   publicPath: '',
   encoding: null
@@ -44,6 +45,7 @@ const defaultOptions = {
  * @property {boolean} options.removeUnnecessaryWhitespaces
  * @property {boolean} options.optimizeRedundantVariables
  * @property {boolean} options.optimizeRedundantFunctionsAndMixins
+ * @property {boolean} options.resolveUrlsStartingWithSlash
  * @property {string} options.encoding
  * @property {function|string|object|null} options.resolveUrl  either - function to resolve, path to JSON file with map of URLs, or map itself
  * @property {string} options.publicPath  when resolveUrl is JSON file path, it will add it on beginning of resolved URLs
@@ -66,6 +68,7 @@ class SassMerge {
    * @param {boolean} [options.removeUnnecessaryWhitespaces]
    * @param {boolean} [options.optimizeRedundantVariables]
    * @param {boolean} [options.optimizeRedundantFunctionsAndMixins]
+   * @param {boolean} [options.resolveUrlsStartingWithSlash]
    * @param {string} [options.encoding]
    * @param {function|string|object} [options.resolveUrl]  either - function to resolve, path to JSON file with map of URLs, or map itself
    * @param {string} [options.publicPath]  when resolveUrl is JSON file path, it will add it on beginning of resolved URLs

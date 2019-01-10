@@ -80,6 +80,7 @@ merger.build().then(console.log, console.error)
 | `optimizeRedundantVariables`          | `false`                        | should remove redundant variables? see *Limitations* section
 | `optimizeRedundantFunctionsAndMixins` | `false`                        | should remove redundant functions and mixins? see *Limitations* section
 | `cacheFilePaths`                      | `true`                         | should cache resolved file paths or rebuild them each time?
+| `resolveUrlsStartingWithSlash`            | `false`                        | should be enabled, when i.e. you have absolute URLs used, and you want to resolve them using `resolveUrl` (example: `background-image: url("/Users/rangoo/Projects/image.png")`)
 | `globalDirectories`                   | `node_modules` near input file | directories where should be files searched for as well
 | `globalPrefixes`                      | `[ "", "~" ]`                  | prefixes which means that file may be in global directory
 | `extensions`                          | `[ "", ".scss", ".sass", ".css", "/index.scss", "/index.sass", "/index.css" ]` | extensions which should be automatically resolved
@@ -137,6 +138,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.13* - add `resolveUrlsStartingWithSlash` option
 - *0.1.12* - fix problems with empty single-line comments (without any character inside)
 - *0.1.11* - add possibility to pass default file encoding
 - *0.1.10* - fix issues with cache, so files are invalidated correctly
