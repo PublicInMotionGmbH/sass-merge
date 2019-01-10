@@ -138,6 +138,7 @@ Unfortunately, it may cause some unexpected problems, mostly with nested code.
 
 ## Changelog
 
+- *0.1.14* - fix problems with resolving absolute paths with `resolveUrlsStartingWithSlash` option
 - *0.1.13* - add `resolveUrlsStartingWithSlash` option
 - *0.1.12* - fix problems with empty single-line comments (without any character inside)
 - *0.1.11* - add possibility to pass default file encoding

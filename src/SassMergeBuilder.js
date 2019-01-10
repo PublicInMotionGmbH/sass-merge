@@ -348,7 +348,10 @@ class SassMergeBuilder {
         return $0
       }
 
-      const absolutePath = this.runner.resolveFilePath(url) || path.resolve(path.join(path.dirname(filePath), url))
+      const absolutePath = url.startsWith('/')
+        ? url
+        : this.runner.resolveFilePath(url) || path.resolve(path.join(path.dirname(filePath), url))
+
       const resolvedUrl = this.resolveUrl(absolutePath, filePath, url, query || null, hash || null).replace(/"/g, '\\"')
 
       return 'url("' + resolvedUrl + query + hash + '")'
